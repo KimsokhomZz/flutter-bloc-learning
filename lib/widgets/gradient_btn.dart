@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:learning_flutter_bloc/pallete.dart';
 
 class GradientButton extends StatelessWidget {
-  const GradientButton({super.key});
+  final VoidCallback onPressed;
+  const GradientButton({super.key, required this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -16,9 +17,7 @@ class GradientButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
       child: ElevatedButton(
-        onPressed: () {
-          //TODO
-        },
+        onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           fixedSize: Size(395, 55),
           backgroundColor: Colors.transparent,
