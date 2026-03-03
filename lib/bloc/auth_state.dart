@@ -15,3 +15,5 @@ class AuthErrorState extends AuthState {
 
   AuthErrorState({this.errorMessage = 'An error occurred. Please try again.'});
 }
+
+class AuthLoadingState extends AuthState {}

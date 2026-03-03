@@ -3,7 +3,8 @@ import 'package:learning_flutter_bloc/pallete.dart';
 
 class GradientButton extends StatelessWidget {
   final VoidCallback onPressed;
-  const GradientButton({super.key, required this.onPressed});
+  final String text;
+  const GradientButton({super.key, required this.onPressed, required this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +25,7 @@ class GradientButton extends StatelessWidget {
           shadowColor: Colors.transparent,
         ),
         child: Text(
-          'Sign in',
+          text,
           style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
         ),
       ),

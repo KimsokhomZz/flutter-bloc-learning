@@ -5,34 +5,64 @@ part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc() : super(AuthInitialState()) {
-    on<AuthLoginRequested>((event, emit) async {
-      try {
-        final email = event.email;
-        final password = event.password;
+    on<AuthLoginRequested>(_onAuthLoginRequested);
+    on<AuthLogoutRequested>(_onAuthLogoutRequested);
+  }
 
-        // email validation
-        final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-        if (!emailRegex.hasMatch(email)) {
-          emit(AuthErrorState(errorMessage: 'Invalid email address.'));
-          return;
-        }
+  @override
+  void onChange(Change<AuthState> change) {
+    super.onChange(change);
+    print(change);
+  }
 
-        // password validation
-        if (password.length < 6) {
-          emit(
-            AuthErrorState(
-              errorMessage: 'Password must be at least 6 characters long.',
-            ),
-          );
-          return;
-        }
+  @override
+  void onTransition(Transition<AuthEvent, AuthState> transition) {
+    super.onTransition(transition);
+    print(transition);
+  }
 
-        await Future.delayed(Duration(seconds: 2), () {
-          return emit(AuthSuccessState(uid: '$email-$password'));
-        });
-      } catch (e) {
-        return emit(AuthErrorState(errorMessage: e.toString()));
+  void _onAuthLoginRequested(
+    AuthLoginRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(AuthLoadingState());
+    try {
+      final email = event.email;
+      final password = event.password;
+
+      // email validation
+      final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+      if (!emailRegex.hasMatch(email)) {
+        emit(AuthErrorState(errorMessage: 'Invalid email address.'));
+        return;
       }
+
+      // password validation
+      if (password.length < 6) {
+        emit(
+          AuthErrorState(
+            errorMessage: 'Password must be at least 6 characters long.',
+          ),
+        );
+        return;
+      }
+
+      await Future.delayed(Duration(milliseconds: 1500), () {
+        return emit(AuthSuccessState(uid: '$email-$password'));
+      });
+    } catch (e) {
+      emit(AuthErrorState(errorMessage: e.toString()));
+      return;
+    }
+  }
+
+  void _onAuthLogoutRequested(
+    AuthLogoutRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(AuthLoadingState());
+    await Future.delayed(Duration(milliseconds: 1500), () {
+      return emit(AuthInitialState());
     });
   }
 }
