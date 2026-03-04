@@ -5,6 +5,7 @@ import 'package:learning_flutter_bloc/home_screen.dart';
 import 'package:learning_flutter_bloc/widgets/gradient_btn.dart';
 import 'package:learning_flutter_bloc/widgets/login_field.dart';
 import 'package:learning_flutter_bloc/widgets/social_btn.dart';
+import 'package:flutter_debouncer/flutter_debouncer.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -16,6 +17,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final Throttler _throttler = Throttler();
 
   @override
   Widget build(BuildContext context) {
@@ -75,11 +77,17 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(height: 18),
                 GradientButton(
                   onPressed: () {
-                    context.read<AuthBloc>().add(
-                      AuthLoginRequested(
-                        email: _emailController.text.trim(),
-                        password: _passwordController.text.trim(),
-                      ),
+                    _throttler.throttle(
+                      duration: const Duration(seconds: 1),
+                      onThrottle: () {
+                        print('😛 Sign in pressed at: ${DateTime.now()}');
+                        context.read<AuthBloc>().add(
+                          AuthLoginRequested(
+                            email: _emailController.text.trim(),
+                            password: _passwordController.text.trim(),
+                          ),
+                        );
+                      },
                     );
                   },
                   text: 'Sign in',
@@ -96,6 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _throttler.cancel();
     super.dispose();
   }
 }

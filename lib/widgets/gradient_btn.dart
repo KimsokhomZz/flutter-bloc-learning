@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:learning_flutter_bloc/pallete.dart';
 
 class GradientButton extends StatelessWidget {
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final String text;
   const GradientButton({super.key, required this.onPressed, required this.text});
 

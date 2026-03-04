@@ -44,7 +44,7 @@ class HomeScreen extends StatelessWidget {
                   Text(state.uid),
                   const SizedBox(height: 20),
                   GradientButton(
-                    onPressed: () {
+                    onPressed: state is AuthLoadingState ? null : () {
                       context.read<AuthBloc>().add(AuthLogoutRequested());
                     },
                     text: 'Logout',
